@@ -1,0 +1,15 @@
+exports.symbols = [];
+exports.testingSymbols = [];
+exports.RSIOneWeek = [];
+exports.RSIBiweekly = [];
+exports.RSIOneMonth = [];
+exports.StochOneWeek = [];
+exports.StochBiWeekly = [];
+exports.StochOneMonth = [];
+exports.StochRsiOneWeek = [];
+exports.StochRsiBiweekly = [];
+exports.StochRsiMonthly = [];
+exports.MacdOneWeek = [];
+exports.MacdBiWeekly = [];
+exports.MacdMonthly = [];
+exports.EtfList = [];

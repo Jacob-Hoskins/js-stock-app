@@ -23,6 +23,7 @@ function makeRequest(options) {
   axios
     .request(options)
     .then((res) => {
+      console.log("Make request");
       handleStockData(res.data);
       startSearchingStocks();
       //handleCryptoData(res.data);
@@ -38,16 +39,17 @@ makeRequest(options.allStockOptions);
 function printData() {
   //console.log(GV.MacdOneWeek);
   //console.log(GV.RSIOneWeek);
-  console.log(GV.RSIBiweekly);
+  //console.log(GV.RSIBiweekly);
   //console.log(GV.RSIOneMonth);
-  //console.log(GV.RSIOneWeek);
   //console.log(GV.StochOneWeek);
   //console.log(GV.StochBiWeekly);
   //console.log(GV.StochOneMonth);
   //console.log(GV.StochRsiOneWeek);
   //console.log(GV.StochRsiBiweekly);
   //console.log(GV.StochRsiMonthly);
-  //console.log(GV.MacdOneWeek);
+  //console.log(GV.StochBiWeekly)
+  console.log(GV.MacdOneWeek);
+  //console.log(GV.MacdBiWeekly);
   //console.log(GV.MacdMonthly);
 }
 
@@ -55,22 +57,24 @@ setTimeout(() => {
   console.log("In Timeout");
   //parameters.RsiWeekParameterCheck();
   //parameters.RsiBiweeklyParameterCheck();
-  parameters.RsiMonthParameterCheck();
+  //parameters.RsiMonthParameterCheck();
   //parameters.StochWeekParameterCheck();
   //parameters.StochBiweeklyParameterCheck();
   //parameters.StochMonthParameterCheck();
   //parameters.StochRsiWeekParameterCheck();
   //parameters.stochRsiBiweeklyCheck();
   //parameters.StochRsiMonthlyParameterCheck();
+  parameters.MacdFiveDayParameterCheck();
+  //macd week is the biweekly
   //parameters.MacdWeekParameterCheck();
   //parameters.MacdMonthlyParameterCheck();
   printData();
-}, 4000);
+}, 7000);
 
 //This fucntion just grabs all stock index's
 function handleStockData(data) {
   //was data.data.length - 1
-  for (let x = 0; x <= data.data.length - 5260; x++) {
+  for (let x = 0; x <= data.data.length - 5255; x++) {
     let stock = data.data[x]["symbol"];
     GV.testingSymbols.push(stock);
   }
@@ -105,16 +109,16 @@ function startSearchingStocks() {
     //*** RSI
     //let weekly_Output = oneWeek.rsiOneW(sym, "1week");
     //let biweekly_output = biWeekly.rsiBiweeklyParams(sym);
-    let one_Month_Output = oneWeek.rsiOneW(sym, "1month");
+    //let one_Month_Output = oneWeek.rsiOneW(sym, "1month");
     //searchRSI(weekly_Output);
     //searchRSIBiweekly(biweekly_output);
-    searchRSI(one_Month_Output);
+    //searchRSI(one_Month_Output);
 
     //***stoch;
     //let stochOneWeek = oneWeek.stochOneWmParams(sym, "1week");
     //let stochBiweekly = oneWeek.stochOneWmParams(sym, "1week");
     //let stochOneMonth = oneWeek.stochOneWmParams(sym, "1month");
-    //searchStoch(stochOneMonth);
+    //searchStochMonthly(stochOneMonth);
     //searchStoch(stochOneWeek);
     //searchStochBiweekly(stochBiweekly);
 
@@ -123,28 +127,24 @@ function startSearchingStocks() {
     // searchMacdMonthly(macdMonthly);
 
     //console.log(symMACD);
-    //let macdOneWeek = oneWeek.macdOneW(symMACD);
-    //searchMACD(macdOneWeek);
-    //let macdBiweekly = oneWeek.macdOneW(symMACD);
+    //let macdBiweekly = oneWeek.macdOneW(sym);
+    //searchMACD(macdBiweekly);
+    let fiveDayParams = oneWeek.macdFiveDay(sym);
+    searchMACDFive(fiveDayParams);
+    //let macdBiweekly = oneWeek.macdOneW(sym);
     //let macdMonthly = oneWeek.macdMonthParams(sym);
     //searchMacdBiweekly(macdBiweekly);
-    // searchMacdMonthly(macdMonthly);
+    //searchMacdMonthly(macdMonthly);
 
     //***stochRSI;
     //let sym_stoch_rsi = GV.testingSymbols[x];
-    // let stochrsi_one_week_options = oneWeek.stochRsiWmParams(
-    //   sym_stoch_rsi,
-    //   "1week"
-    // );
+    //let stochrsi_one_week_options = oneWeek.stochRsiWmParams(sym, "1week");
     //searchStochRSI(stochrsi_one_week_options);
 
-    //let stochrsi_biweekly_options = biWeekly.rsiBiweeklyParams(sym_stoch_rsi);
+    //let stochrsi_biweekly_options = biWeekly.rsiBiweeklyParams(sym);
     //searchStochRsiBiweekly(stochrsi_biweekly_options);
 
-    //let stochrsi_one_month_options = oneWeek.stochRsiWmParams(
-    //  sym_stoch_rsi,
-    //  "1month"
-    //);
+    //let stochrsi_one_month_options = oneWeek.stochRsiWmParams(sym, "1month");
     //searchStohcRsiMonthly(stochrsi_one_month_options);
 
     //***ETF LISTS
@@ -208,7 +208,19 @@ function searchStochBiweekly(stochOptions) {
   axios
     .request(stochOptions)
     .then((res) => {
+      console.log(stochOptions);
       biWeekly.stochValue(res.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+}
+
+function searchStochMonthly(options) {
+  axios
+    .request(options)
+    .then((res) => {
+      oneWeek.stochValueMonthly(res.data);
     })
     .catch(function (error) {
       console.error(error);
@@ -252,11 +264,22 @@ function searchStohcRsiMonthly(options) {
 }
 
 /* MACD */
+function searchMACDFive(options) {
+  axios
+    .request(options)
+    .then((res) => {
+      oneWeek.macdValueFiveDay(res.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+}
+
 function searchMACD(options) {
   axios
     .request(options)
     .then((res) => {
-      oneWeek.macdValue(res.data);
+      oneWeek.macdValueBiweekly(res.data);
     })
     .catch(function (error) {
       console.error(error);

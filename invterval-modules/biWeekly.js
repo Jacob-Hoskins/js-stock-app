@@ -22,6 +22,7 @@ exports.grabRSIValues = function getValues(data) {
 
 //******STOCH
 exports.stochValue = function getValues(data) {
+  console.log("STOCH: ", data);
   let current_interval = data.meta.interval;
   let current_symbol = data.meta.symbol;
   let current_week = data.values[0];

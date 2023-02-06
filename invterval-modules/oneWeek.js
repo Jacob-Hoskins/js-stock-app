@@ -25,6 +25,7 @@ exports.rsiValue = function gettingRSIValues(data) {
   if (interval === "1week") {
     const symbol = data.meta["symbol"];
     const oneWRSI = data.values[0];
+
     let rsiListDic = {
       symbol: symbol,
       OneWeekReading: oneWRSI,
@@ -75,7 +76,8 @@ exports.stochOneWmParams = function oneWeekStochSearch(symbol, interval) {
 exports.stochValue = function gettingStochValues(data) {
   const interval = data.meta["interval"];
   const symbol = data.meta["symbol"];
-  const oneWRSI = data.values[0];
+  console.log(data.values);
+  const oneWRSI = data.values[1];
   let rsiListDic = {
     sybmol: symbol,
     OneWeekReading: oneWRSI,
@@ -84,6 +86,17 @@ exports.stochValue = function gettingStochValues(data) {
   GV.StochOneWeek.push(rsiListDic);
   //console.log(GV.StochOneWeek);
   return GV.StochOneWeek;
+};
+
+exports.stochValueMonthly = function monthlyStochValue(data) {
+  //onsole.log(data);
+  let monthly_value = data.values[0];
+  let symbol = data.meta["symbol"];
+  let stoch_monthly_dict = {
+    symbol: symbol,
+    monthlyvalue: monthly_value,
+  };
+  GV.StochOneMonth.push(stoch_monthly_dict);
 };
 
 //STOCH RSI
@@ -135,7 +148,64 @@ exports.macdOneW = function oneWeekMacdSearch(testList) {
   return options.oneWeekOptionsMACD;
 };
 
-exports.macdValue = function gettingMacdValue(data) {
+exports.macdFiveDay = function fiveDayparams(symbol) {
+  let param_symbol = (options.oneWeekOptionsMACD.params["symbol"] = symbol);
+  let interval = (options.oneWeekOptionsMACD.params["interval"] = "1day");
+  let output = (options.oneWeekOptionsMACD.params["outputsize"] = "5");
+  return options.oneWeekOptionsMACD;
+};
+
+exports.macdValueFiveDay = function fiveDayValue(data) {
+  let values = data.values;
+  //console.log(data);
+  let symbol = data.meta.symbol;
+  let day_one = data.values[0];
+  let day_one_macd = day_one.macd;
+  let day_one_signal = day_one.macd_signal;
+
+  let day_two = data.values[1];
+  let day_two_macd = day_two.macd;
+  let day_two_signal = day_two.macd_signal;
+
+  let day_three = data.values[2];
+  let day_three_macd = day_three.macd;
+  let day_three_signal = day_three.macd_signal;
+
+  let day_four = data.values[3];
+  let day_four_macd = day_four.macd;
+  let day_four_signal = day_four.macd_signal;
+
+  let day_five = data.values[4];
+  let day_five_macd = day_five.macd;
+  let day_five_signal = day_five.macd_signal;
+
+  let five_day_dict = {
+    symbol: symbol,
+    dayone: {
+      macd: day_one_macd,
+      signal: day_one_signal,
+    },
+    daytwo: {
+      macd: day_two_macd,
+      signal: day_two_signal,
+    },
+    daythree: {
+      macd: day_three_macd,
+      signal: day_three_signal,
+    },
+    dayfour: {
+      macd: day_four_macd,
+      signal: day_four_signal,
+    },
+    dayfive: {
+      macd: day_five_macd,
+      signal: day_five_signal,
+    },
+  };
+  GV.MacdOneWeek.push(five_day_dict);
+};
+
+exports.macdValueBiweekly = function gettingMacdValue(data) {
   let current_symbol = data.meta.symbol;
   let weekly_macd = data.values[0];
   let previous_macd = data.values[1];
@@ -144,7 +214,7 @@ exports.macdValue = function gettingMacdValue(data) {
     weeklymacd: weekly_macd,
     previousmacd: previous_macd,
   };
-  GV.MacdOneWeek.push(weekly_macd_dict);
+  GV.MacdBiWeekly.push(weekly_macd_dict);
 };
 
 exports.macdMonthParams = function setParams(data) {

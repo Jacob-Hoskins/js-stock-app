@@ -81,9 +81,8 @@ exports.StochBiweeklyParameterCheck = function StochBiweeklyCheck() {
 };
 
 exports.StochMonthParameterCheck = function StochOneWeekCheck() {
-  console.log("Parameter check");
   for (let x = 0; x <= GV.StochOneMonth.length - 1; x++) {
-    let stoch_data = GV.StochOneMonth[x].OneWeekReading;
+    let stoch_data = GV.StochOneMonth[x].monthlyvalue;
     slow_d = stoch_data.slow_d;
     if (slow_d < 20) {
       GV.StochOneMonth[x].paramTest = true;
@@ -130,10 +129,141 @@ exports.StochRsiMonthlyParameterCheck = function StochRsiMonthlyValue() {
   }
 };
 
-exports.MacdWeekParameterCheck = function MacdOneWeekCheck() {
+exports.MacdFiveDayParameterCheck = function FiveDayCheck() {
   for (let x = 0; x <= GV.MacdOneWeek.length - 1; x++) {
-    let week_one_macd_data = GV.MacdOneWeek[x].weeklymacd;
-    let week_two_macd_data = GV.MacdOneWeek[x].previousmacd;
+    let dp_one_macd = GV.MacdOneWeek[x].dayone["macd"];
+    let dp_one_signal = GV.MacdOneWeek[x].dayone["signal"];
+    let dp_one_test;
+
+    let dp_two_macd = GV.MacdOneWeek[x].daytwo["macd"];
+    let dp_two_signal = GV.MacdOneWeek[x].daytwo["signal"];
+    let dp_two_test;
+
+    if (dp_one_macd > dp_one_signal) {
+      dp_one_test = ">";
+    }
+    if (dp_one_signal > dp_one_macd) {
+      dp_one_test = "<";
+    }
+    if (dp_two_macd > dp_two_signal) {
+      dp_two_test = ">";
+    }
+    if (dp_two_signal > dp_two_macd) {
+      dp_two_test = "<";
+    }
+
+    if (dp_one_test === dp_two_test) {
+      GV.MacdOneWeek[x].paramTest = false;
+    }
+    if (dp_one_test != dp_two_test) {
+      GV.MacdOneWeek[x].paramTest = true;
+    }
+
+    let dp_three_macd = GV.MacdOneWeek[x].daythree["macd"];
+    let dp_three_signal = GV.MacdOneWeek[x].daythree["signal"];
+    let dp_three_test;
+
+    if (dp_three_macd > dp_three_signal) {
+      dp_three_test = ">";
+    }
+    if (dp_three_signal > dp_three_signal) {
+      dp_three_test = "<";
+    }
+
+    if (dp_two_test === dp_three_test) {
+      GV.MacdOneWeek[x].paramTest = false;
+    }
+    if (dp_two_test != dp_three_test) {
+      GV.MacdOneWeek[x].paramTest = true;
+    }
+
+    let dp_four_macd = GV.MacdOneWeek[x].dayfour["macd"];
+    let dp_four_signal = GV.MacdOneWeek[x].dayfour["signal"];
+    let dp_four_test;
+
+    if (dp_four_macd > dp_four_signal) {
+      dp_four_test = ">";
+    }
+    if (dp_four_signal > dp_four_macd) {
+      dp_four_test = "<";
+    }
+
+    if (dp_four_macd === dp_four_test) {
+      GV.MacdOneWeek[x].paramTest = false;
+    }
+    if (dp_four_macd != dp_four_test) {
+      GV.MacdOneWeek[x].paramTest = true;
+    }
+
+    let dp_five_macd = GV.MacdOneWeek[x].dayfive["macd"];
+    let dp_five_signal = GV.MacdOneWeek[x].dayfive["signal"];
+    let dp_five_test;
+
+    if (dp_five_macd > dp_five_signal) {
+      dp_five_test = ">";
+    }
+    if (dp_five_signal > dp_five_macd) {
+      dp_five_test = "<";
+    }
+
+    if (dp_five_test === dp_five_test) {
+      GV.MacdOneWeek[x].paramTest = false;
+    }
+    if (dp_five_test != dp_five_test) {
+      GV.MacdOneWeek[x].paramTest = true;
+    }
+  }
+  // for (let x = 0; x < GV.MacdOneWeek.length - 1; x++) {
+  //console.log(GV.MacdOneWeek[x].macd, GV.MacdOneWeek[x + 1]);
+  //   let dp_one_test;
+  //   let dp_two_test;
+  //   let dp_one = GV.MacdOneWeek[x];
+  //   let dp_one_macd = dp_one.macd;
+  //   let dp_one_signal = dp_one.signal;
+  //   let dp_two = GV.MacdOneWeek[x + 1];
+  //   let dp_two_macd = dp_two.macd;
+  //   let dp_two_signal = dp_two.signal;
+  //   if (dp_one_macd > dp_one_signal) {
+  //     dp_one_test = ">";
+  //   }
+  //   if (dp_one_signal > dp_one_macd) {
+  //     dp_one_test = "<";
+  //   }
+  //   if (dp_two_macd > dp_two_signal) {
+  //     dp_two_test = ">";
+  //   }
+  //   if (dp_two_signal > dp_two_macd) {
+  //     dp_two_test = "<";
+  //   }
+  //   if (dp_two_test === ">" && dp_one_test === ">") {
+  //     GV.MacdOneWeek[x].paramTest = "false";
+  //     GV.MacdOneWeek[x + 1].paramTest = "false";
+  //     return GV.MacdOneWeek;
+  //   }
+  //   if (dp_two_test == "<" && dp_one_test == "<") {
+  //     GV.MacdOneWeek[x].paramTest = "false";
+  //     GV.MacdOneWeek[x + 1].paramTest = "false";
+  //     return GV.MacdOneWeek;
+  //   }
+  //   if (dp_two_test === ">" && dp_one_test === "<") {
+  //     GV.MacdOneWeek[x].paramTest = true;
+  //     GV.MacdOneWeek[x + 1].paramTest = true;
+  //     return GV.MacdOneWeek;
+  //   }
+  //   if (dp_two_test === "<" && dp_one_test === ">") {
+  //     GV.MacdOneWeek[x].paramTest = true;
+  //     GV.MacdOneWeek[x + 1].paramTest = true;
+  //     return GV.MacdOneWeek;
+  //   }
+  //   return GV.MacdOneWeek;
+  // }
+  // return GV.MacdOneWeek;
+};
+
+exports.MacdWeekParameterCheck = function MacdOneWeekCheck() {
+  for (let x = 0; x <= GV.MacdBiWeekly.length - 1; x++) {
+    let week_one_macd_data = GV.MacdBiWeekly[x].weeklymacd;
+    let week_two_macd_data = GV.MacdBiWeekly[x].previousmacd;
 
     let week_one_macd = week_one_macd_data.macd;
     let week_one_signal = week_one_macd_data["macd_signal"];
@@ -154,10 +284,10 @@ exports.MacdWeekParameterCheck = function MacdOneWeekCheck() {
       w_two_higher = "<";
     }
     if (w_one_higher === w_two_higher) {
-      GV.MacdOneWeek[x].paramTest = false;
+      GV.MacdBiWeekly[x].paramTest = false;
     }
     if (w_one_higher != w_two_higher) {
-      GV.MacdOneWeek[x].paramTest = true;
+      GV.MacdBiWeekly[x].paramTest = true;
     }
   }
 };
